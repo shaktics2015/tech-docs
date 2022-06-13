@@ -7,6 +7,20 @@
 
 ### Circuit breaker
 
+
+#### Required dependencies 
+    <dependency>
+         <groupId>io.github.resilience4j</groupId>
+         <artifactId>resilience4j-spring-boot2</artifactId>
+     </dependency>
+     <dependency>
+         <groupId>io.github.resilience4j</groupId>
+         <artifactId>resilience4j-reactor</artifactId>
+     </dependency>
+
+
+#### Actuator metrics 
+
 http://localhost:8080/actuator/circuitbreakerevents/lookupTodos/STATE_TRANSITION
 
 ```
