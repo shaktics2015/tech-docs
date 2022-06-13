@@ -1,3 +1,7 @@
+
+application:
+  version: '1.0-SNAPSHOT'
+
 server:
   port: 8080
 
@@ -24,3 +28,54 @@ feign:
 client:
   api:
     url: https://jsonplaceholder.typicode.com/
+
+# https://resilience4j.readme.io/docs/circuitbreaker
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      registerHealthIndicator: true
+      # Failure rate threshold percentage
+      failureRateThreshold: 10
+      # Minimum number of call attempts before rate threshold percentage is checked.
+      ringBufferSizeInClosedState: 10
+      # How long to wait until switching to half open.
+      waitDurationInOpenState: 3s
+      # Number of successful requests before moving back to closed from half open.
+      ringBufferSizeInHalfOpenState: 5
+      # Exceptions that do not count towards opening the circuit.
+#      ignoreExceptions:
+#        # Ignore 4xx exceptions.
+#        - org.springframework.web.client.HttpClientErrorException
+  instances:
+    lookupTodos:
+    # baseConfig: default
+      allowHealthIndicatorToFail: false
+      registerHealthIndicator: true
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 5
+      failureRateThreshold: 10
+      waitDurationInOpenState: 20s
+      permittedNumberOfCallsInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            request: true
+        resielence4j:
+          circuitbreaker:
+            calls: true
